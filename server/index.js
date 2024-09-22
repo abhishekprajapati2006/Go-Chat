@@ -20,7 +20,9 @@ app.use(cookiesParser());
 
 const PORT = process.env.PORT || 8080;
 
+
 app.get('/',(request,response)=>{
+    response.json("hello");
     response.json({
         message : "Server running at " + PORT
     });
