@@ -9,7 +9,7 @@ const searchUser = require('../controller/searchUser')
 
 const router = express.Router()
 
-//create user 
+//create user api
 router.post('/register',registerUser)
 //check user email
 router.post('/email',checkEmail)

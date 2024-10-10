@@ -50,7 +50,8 @@ const RegisterPage = () => {
     e.preventDefault()
     e.stopPropagation()
 
-    const URL = `${process.env.REACT_APP_BACKEND_URL}/api/register`
+    const endpoint = '/api/register';
+    const URL = `${process.env.REACT_APP_BACKEND_URL}${endpoint}`
 
     try {
         const response = await axios.post(URL,data)
@@ -74,6 +75,7 @@ const RegisterPage = () => {
     }
     console.log('data',data)
   }
+
 
 
   return (

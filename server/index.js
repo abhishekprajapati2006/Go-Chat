@@ -7,32 +7,26 @@ const cookiesParser = require('cookie-parser')
 const { app, server } = require('./socket/index')
 
 // const app = express()
-if (!app) {
-    const app = express()
-}
-
 app.use(cors({
     origin : process.env.FRONTEND_URL,
     credentials : true
-}));
-app.use(express.json());
-app.use(cookiesParser());
+}))
+app.use(express.json())
+app.use(cookiesParser())
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8080
 
 app.get('/',(request,response)=>{
     response.json({
         message : "Server running at " + PORT
-    });
-});
+    })
+})
 
 //api endpoints
-app.use('/api', router);
+app.use('/api',router)
 
-connectDB().then(() => {
+connectDB().then(()=>{
     server.listen(PORT,()=>{
         console.log("server running at " + PORT)
     })
-}).catch(err => {
-    console.error("Failed to connect to the database", err)
 })

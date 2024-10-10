@@ -8,6 +8,7 @@ const getConversation = require('../helpers/getConversation')
 
 const app = express()
 
+/***socket connection */
 const server = http.createServer(app)
 const io = new Server(server,{
     cors : {
@@ -15,6 +16,10 @@ const io = new Server(server,{
         credentials : true
     }
 })
+
+/***
+ * socket running at http://localhost:8080/
+ */
 
 //online user
 const onlineUser = new Set()
@@ -47,6 +52,7 @@ io.on('connection',async(socket)=>{
         socket.emit('message-user',payload)
 
 
+         //get previous message
          const getConversationMessage = await ConversationModel.findOne({
             "$or" : [
                 { sender : user?._id, receiver : userId },
@@ -58,8 +64,10 @@ io.on('connection',async(socket)=>{
     })
 
 
+    //new message
     socket.on('new message',async(data)=>{
 
+        //check conversation is available both user
 
         let conversation = await ConversationModel.findOne({
             "$or" : [
@@ -68,6 +76,7 @@ io.on('connection',async(socket)=>{
             ]
         })
 
+        //if conversation is not available
         if(!conversation){
             const createConversation = await ConversationModel({
                 sender : data?.sender,
@@ -99,6 +108,7 @@ io.on('connection',async(socket)=>{
         io.to(data?.sender).emit('message',getConversationMessage?.messages || [])
         io.to(data?.receiver).emit('message',getConversationMessage?.messages || [])
 
+        //send conversation
         const conversationSender = await getConversation(data?.sender)
         const conversationReceiver = await getConversation(data?.receiver)
 
@@ -107,6 +117,7 @@ io.on('connection',async(socket)=>{
     })
 
 
+    //sidebar
     socket.on('sidebar',async(currentUserId)=>{
         console.log("current user",currentUserId)
 
@@ -132,6 +143,7 @@ io.on('connection',async(socket)=>{
             { "$set" : { seen : true }}
         )
 
+        //send conversation
         const conversationSender = await getConversation(user?._id?.toString())
         const conversationReceiver = await getConversation(msgByUserId)
 
@@ -139,6 +151,7 @@ io.on('connection',async(socket)=>{
         io.to(msgByUserId).emit('conversation',conversationReceiver)
     })
 
+    //disconnect
     socket.on('disconnect',()=>{
         onlineUser.delete(user?._id?.toString())
         console.log('disconnect user ',socket.id)
