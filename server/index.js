@@ -16,7 +16,9 @@ app.use(cookiesParser())
 
 const PORT = process.env.PORT || 8080
 
+
 app.get('/',(request,response)=>{
+    response.json("hello");
     response.json({
         message : "Server running at " + PORT
     })
@@ -29,4 +31,10 @@ connectDB().then(()=>{
     server.listen(PORT,()=>{
         console.log("server running at " + PORT)
     })
+<<<<<<< HEAD
 })
+=======
+}).catch(err => {
+    console.error("Failed to connect to the database", err)
+})
+>>>>>>> 76906a52065283f9403245cf769d5778be44e3a0
